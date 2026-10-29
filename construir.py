@@ -16,7 +16,7 @@ import subprocess
 import sys
 
 RAIZ = os.path.dirname(os.path.abspath(__file__))
-AMBIENTE = ['amb-novo.js', 'promob-tela.js', 'promob-armario.js', 'promob-atalhos.js']
+AMBIENTE = ['amb-novo.js', 'promob-importador.js', 'promob-tela.js', 'promob-armario.js', 'promob-atalhos.js']
 MARCA = '/*@@AMBIENTE@@*/'
 TAG = '<script type="text/plain" id="motor3dFonte">'
 
