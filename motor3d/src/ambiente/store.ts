@@ -88,7 +88,7 @@ export interface Opts {
 }
 
 export const OPTS_PADRAO: Opts = {
-  fill: 'texturas_linhas', persp: true, verTeto: true, cotas: true, sel: null, fundo: '#eef2f6',
+  fill: 'texturas_linhas', persp: true, verTeto: true, cotas: false, sel: null, fundo: '#eef2f6',
   camadas: {}, autoRebaixar: false, hotpoints: false, grid: { on: false, passo: 500 }, colisao: true,
   luzPadrao: 1, iluminacaoPadrao: true, clima: { tipo: 'ensolarado', int: 1, alt: 45, az: 135, ceu: true },
   apres: { sombras: true, ao: true, reflexos: true }, corte: { anterior: 10, posterior: 200000 },
