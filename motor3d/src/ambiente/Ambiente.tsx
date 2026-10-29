@@ -473,10 +473,12 @@ function PecaArmario({ p, sel, on }: { p: Armario3D['pecas'][number]; sel: Sel; 
       onPointerDown={(e) => {
         if (e.nativeEvent.button !== 0 || opts.ferramenta !== 'navegar' || (opts.nav && opts.nav !== 'sel') || opts.inserir || opts.cons?.ativo) return
         e.stopPropagation()
+        const ponto = e.ray.intersectPlane(new Plane(new Vector3(0, 1, 0), 0), new Vector3())
+        if (!ponto) return
         arrastando.current = true
         e.target.setPointerCapture(e.pointerId)
         ponte().selecionar?.(sel, { ctrl: e.nativeEvent.ctrlKey || e.nativeEvent.metaKey })
-        ponte().acao?.('arrastarArmarioInicio', sel, null)
+        ponte().acao?.('arrastarArmarioInicio', sel, { x: Math.round(ponto.x / M), y: Math.round(-ponto.z / M) })
       }}
       onPointerMove={(e) => {
         if (!arrastando.current) return
