@@ -15,7 +15,7 @@ const ambNovo = () => ({paredes:[], aberturas:[], tetos:[], geometrias:[], luzes
 const AV = {modo:'3d', nav:'sel', multi:[], lat:null, latFixo:false, modAberto:true, lib:'armarios', matBar:false, arvore:false, passo:10, trava:null, verOcultos:false, clip:null, armEd:null, rib:'construcao', cons:null, ref:null, sel:null, ferr2d:'sel', par:null, fill:'texturas_linhas', persp:true, verTeto:true, cotas:true, autoRebaixar:false, hotpoints:false, colisao:true, atrair:true, vizinhos:true, verRef:true,
   grid:{on:false, passo:500}, camadas:{}, clima:{tipo:'ensolarado', int:1, alt:45, az:135, ceu:true}, apres:{sombras:true, ao:true, reflexos:true}, luzPadrao:1, iluminacaoPadrao:true, fundo:'#eef2f6',
   corte:{anterior:10, posterior:200000}, render:{alvo:200, escala:1}, imagem:{marca:'', brilho:100, contraste:100, saturacao:100, largura:0}, dinamica:{passo:50, fps:30, vel:20, graus:360},
-  ferramenta:'navegar', inserir:null, modulos:false, undo:[], redo:[], vb:null, drag:null, renderOn:false, animando:false, copiaMat:null};
+  ferramenta:'navegar', inserir:null, modulos:false, undo:[], redo:[], vb:null, drag:null, drag3D:null, renderOn:false, animando:false, copiaMat:null};
 function ambDono(){ return proj(UI.proj) || openProjects()[0] || null; }
 function amb(){ const o = ambDono() || S; if(!o.amb) o.amb = ambNovo(); const A = o.amb; const n = ambNovo(); for(const k of Object.keys(n)) if(A[k] === undefined) A[k] = n[k]; A.cfg = {...n.cfg, ...(A.cfg || {})}; return A; }
 function ambSnap(){ AV.undo.push(JSON.stringify(amb())); if(AV.undo.length > 60) AV.undo.shift(); AV.redo = []; }
@@ -332,6 +332,24 @@ function ambAcao3D(nome, s, arg){
   const A = amb(), w = s?.t === 'parede' ? A.paredes.find(v => v.id === s.id) : null, o = s ? (s.t === 'piso' ? A.piso : (A[AMB_LISTA[s.t]] || []).find(x => x.id === s?.id)) : null;
   const mexe = f => { ambSnap(); f(); if(A.piso.auto) ambAjustarPiso(A); ambMudou(); };
   switch(nome){
+    case 'arrastarArmarioInicio': {
+      const a = A.armarios.find(v => v.id === s?.id);
+      if(a){ ambSnap(); AV.drag3D = {id:a.id}; AV.sel = s; AV.multi = []; }
+      break;
+    }
+    case 'arrastarArmario': {
+      const a = A.armarios.find(v => v.id === s?.id);
+      if(a && AV.drag3D?.id === a.id && Number.isFinite(+arg?.x) && Number.isFinite(+arg?.y)){
+        a.x = Math.round(+arg.x); a.y = Math.round(+arg.y);
+        motorRoom();
+        if($('#amb2dHost')) refresh2D();
+      }
+      break;
+    }
+    case 'arrastarArmarioFim': {
+      if(AV.drag3D?.id === s?.id){ AV.drag3D = null; ambMudou(); }
+      break;
+    }
     case 'duplo': if(s?.t === 'parede') motor()?.cmd('vistaRapida', s.id); else { AV.sel = s; motor()?.cmd('aproximar'); } break;
     case 'rebaixar': if(w) mexe(() => { w.rebaixada = true; }); break;
     case 'levantar': if(w) mexe(() => { w.rebaixada = false; }); break;
