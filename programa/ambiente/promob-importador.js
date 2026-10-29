@@ -17,9 +17,15 @@ async function prZip(a){
 function prAmb(nome,bytes){
  const xml=prText(bytes),doc=new DOMParser().parseFromString(xml,'application/xml');if(doc.querySelector('parsererror'))throw Error('XML inválido: '+nome);
  const root=doc.documentElement,infos=[...root.getElementsByTagName('INFORMACOES')],tipos={},comp=infos.map((e,i)=>{
- const d=e.getElementsByTagName('INSERTDIMENSION')[0],p=e.getElementsByTagName('POSICAOINSERCAO')[0],pt=p&&p.getElementsByTagName('PONTOBASE')[0],mats=[...new Set([...e.getElementsByTagName('MATERIAL')].map(m=>m.getAttribute('ID')).filter(Boolean))];
- const c={indice:i,tipo:e.getAttribute('TYPE')||'desconhecido',id:e.getAttribute('ID')||'',largura:Number(d&&d.getAttribute('WIDTH'))||null,altura:Number(d&&d.getAttribute('HEIGHT'))||null,profundidade:Number(d&&d.getAttribute('DEPTH'))||null,posicao:pt?Object.fromEntries([...pt.attributes].map(a=>[a.name,a.value])):{},materiais:mats,regioes:e.getElementsByTagName('REGION').length};
- tipos[c.tipo]=(tipos[c.tipo]||0)+1;return c;
+  const d=e.getElementsByTagName('INSERTDIMENSION')[0],p=e.getElementsByTagName('POSICAOINSERCAO')[0],pt=p&&p.getElementsByTagName('PONTOBASE')[0];
+  const mats=[...new Set([...e.getElementsByTagName('MATERIAL')].map(m=>m.getAttribute('ID')).filter(Boolean))];
+  const models=[...e.getElementsByTagName('MODEL')].map(m=>({id:m.getAttribute('IDMODEL')||'',tipo:m.getAttribute('IDMODELTYPE')||'',remoto:m.getAttribute('ISREMOTE')||''}));
+  const regioes=[...e.getElementsByTagName('REGION')].map((g,ri)=>{
+   const pos=g.getElementsByTagName('POSITION')[0],base=pos&&pos.getElementsByTagName('PONTOBASE')[0],normal=pos&&pos.getElementsByTagName('NORMAL')[0],rot=pos&&pos.getElementsByTagName('ROTATION')[0],pts=g.getElementsByTagName('POINTS')[0];
+   return {id:g.getAttribute('ID')||'',editavel:g.getAttribute('EDIT')||'',material:g.getElementsByTagName('MATERIAL')[0]?.getAttribute('ID')||'',base:base?Object.fromEntries([...base.attributes].map(a=>[a.name,Number(a.value)||0])):{},normal:normal?Object.fromEntries([...normal.attributes].map(a=>[a.name,Number(a.value)||0])):{},rotacao:rot?Number(rot.textContent)||0:0,pontos:pts?[...pts.getElementsByTagName('POINT')].map(q=>Object.fromEntries([...q.attributes].map(a=>[a.name,Number(a.value)||0]))):[]};
+  });
+  const c={indice:i,tipo:e.getAttribute('TYPE')||'desconhecido',id:e.getAttribute('ID')||'',largura:Number(d&&d.getAttribute('WIDTH'))||null,altura:Number(d&&d.getAttribute('HEIGHT'))||null,profundidade:Number(d&&d.getAttribute('DEPTH'))||null,posicao:pt?Object.fromEntries([...pt.attributes].map(a=>[a.name,Number(a.value)||0])):{},rotacao:p&&p.getElementsByTagName('ROTATION')[0]?Number(p.getElementsByTagName('ROTATION')[0].textContent)||0:0,materiais:mats,modelos:models,regioes:regioes};
+  tipos[c.tipo]=(tipos[c.tipo]||0)+1;return c;
  });
  return {nome:root.getAttribute('NAME'),id:root.getAttribute('ID'),guid:root.getAttribute('GUID'),tipos,componentes:comp,xml:xml};
 }
@@ -31,7 +37,7 @@ async function prImportar(){
  for(const [n,b] of files){const l=n.toLowerCase();if(l.endsWith('.ambient3d'))amb.push({path:n,...prAmb(n,b)});else if(l.endsWith('.material'))mat.push({nome:n,xml:prText(b)});else if(/\.(jpg|jpeg|png|bmp|tif|tiff)$/i.test(n))imgs.push({nome:n,bytes:b.length});}
  if(!amb.length)throw Error('Nenhum .ambient3d encontrado no backup.');
  const all=amb.flatMap(a=>a.componentes),tipos={};all.forEach(c=>tipos[c.tipo]=(tipos[c.tipo]||0)+1);
- const resumo={arquivo:r.f.name,bytes:r.f.size||Math.round(b64.length*.75),ambientes:amb.map(a=>({nome:a.nome,id:a.id,componentes:a.componentes.length,tipos:a.tipos})),totalComponentes:all.length,tipos:tipos,materiaisReferenciados:[...new Set(all.flatMap(c=>c.materiais))].sort(),arquivosMateriais:mat.map(m=>m.nome),imagens:imgs};
+ const resumo={arquivo:r.f.name,bytes:r.f.size||Math.round(b64.length*.75),ambientes:amb.map(a=>({nome:a.nome,id:a.id,componentes:a.componentes.length,tipos:a.tipos})),totalComponentes:all.length,tipos:tipos,materiaisReferenciados:[...new Set(all.flatMap(c=>c.materiais))].sort(),arquivosMateriais:mat.map(m=>m.nome),imagens:imgs.map(i=>({nome:i.nome,bytes:i.bytes})),componentes:all};
  PROMOB_IMPORT_PENDENTE={nome:r.f.name,base64:b64,resumo,amb,mat,imgs};
  const rows=Object.entries(tipos).sort((a,b)=>b[1]-a[1]).map(([k,v])=>'<tr><td>'+esc(k)+'</td><td>'+v+'</td></tr>').join('');
  const ambs=resumo.ambientes.map(a=>'<li>'+esc(a.nome||a.id)+' : '+a.componentes+' registros</li>').join('');
