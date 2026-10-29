@@ -452,6 +452,7 @@ function PecaArmario({ p, sel, on }: { p: Armario3D['pecas'][number]; sel: Sel; 
 }
 
 function ArmarioMesh({ a }: { a: Armario3D }) {
+  const room = useRoom((s) => s.room)
   const sel: Sel = { t: 'armario', id: a.id }
   const opts = useRoom((s) => s.opts)
   const on = mesmo(opts.sel, sel)
@@ -466,11 +467,24 @@ function ArmarioMesh({ a }: { a: Armario3D }) {
           <lineBasicMaterial color={on ? COR_SEL : '#33404f'} />
         </lineSegments>
       )}
-      {on && opts.cotas && (
-        <Html position={[(a.L / 2) * M, (a.A + 60) * M, (a.P / 2) * M]} center style={{ pointerEvents: 'none' }}>
-          <div className="cota3d">{Math.round(a.L)} × {Math.round(a.A)} × {Math.round(a.P)}</div>
-        </Html>
-      )}
+      {on && opts.cotas && (() => {
+        const alturaAmbiente = room.paredes.length ? Math.max(...room.paredes.map((w) => w.alt, 0)) : null
+        const inferior = Math.max(0, a.z)
+        const superior = alturaAmbiente === null ? null : Math.max(0, alturaAmbiente - (a.z + a.A))
+        return (
+          <>
+            <Html position={[(a.L / 2) * M, (a.A + 60) * M, (a.P / 2) * M]} center style={{ pointerEvents: 'none' }}>
+              <div className="cota3d">{Math.round(a.L)} × {Math.round(a.A)} × {Math.round(a.P)} mm</div>
+            </Html>
+            <Html position={[(a.L / 2) * M, (a.A + 150) * M, 0]} center style={{ pointerEvents: 'none' }}>
+              <div className="cota3d">Superior: {superior === null ? 'sem teto/altura definida' : Math.round(superior) + ' mm'}</div>
+            </Html>
+            <Html position={[(a.L / 2) * M, -45 * M, (a.P / 2) * M]} center style={{ pointerEvents: 'none' }}>
+              <div className="cota3d">Inferior: {Math.round(inferior)} mm</div>
+            </Html>
+          </>
+        )
+      })()}
     </group>
   )
 }
