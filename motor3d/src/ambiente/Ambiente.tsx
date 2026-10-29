@@ -460,7 +460,7 @@ function PecaArmario({ p, sel, on }: { p: Armario3D['pecas'][number]; sel: Sel; 
   const ev = useCliques(sel, 'armarios')
   const e = estilo(opts.fill)
   const m = useMat(p.mat || 'mdf', p.cor, 'geo', sel)
-  const pos: [number, number, number] = [(p.x + p.dx / 2) * M, (p.z + p.dz / 2) * M, (p.y + p.dy / 2) * M]
+  const pos: [number, number, number] = [(p.x + p.dx / 2) * M, (p.z + p.dz / 2) * M, -(p.y + p.dy / 2) * M]
   if (e.caixa) return null
   return (
     <mesh
@@ -517,7 +517,7 @@ function ArmarioMesh({ a }: { a: Armario3D }) {
     <group position={w3(a.x, a.y, a.z)} rotation={[0, rot, 0]}>
       {a.pecas.map((p, i) => <PecaArmario key={i} p={p} sel={sel} on={on} />)}
       {(e.caixa || on) && (
-        <lineSegments position={[(a.L / 2) * M, (a.A / 2) * M, (a.P / 2) * M]} raycast={() => null}>
+        <lineSegments position={[(a.L / 2) * M, (a.A / 2) * M, -(a.P / 2) * M]} raycast={() => null}>
           <edgesGeometry args={[new BoxGeometry(a.L * M, a.A * M, a.P * M)]} />
           <lineBasicMaterial color={on ? COR_SEL : '#33404f'} />
         </lineSegments>
