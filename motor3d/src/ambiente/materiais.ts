@@ -1,4 +1,4 @@
-import { CanvasTexture, Color, MeshStandardMaterial, RepeatWrapping, SRGBColorSpace, DoubleSide, type Texture } from 'three'
+import { CanvasTexture, Color, MeshStandardMaterial, MeshPhysicalMaterial, RepeatWrapping, SRGBColorSpace, DoubleSide, type Texture } from 'three'
 
 /* Acabamentos do ambiente (piso, paredes, aberturas). As texturas são desenhadas
    na hora num canvas, para o programa funcionar sem internet. Cada textura cobre
@@ -19,7 +19,7 @@ export const ACABAMENTOS: Record<string, { nome: string; cor: string; grupo: str
   aluminio: { nome: 'Alumínio', cor: '#c8ccd0', grupo: ['abertura', 'geo'], rug: 0.35, met: 0.8 },
   branco: { nome: 'Laca branca', cor: '#f5f5f2', grupo: ['abertura', 'geo'], rug: 0.4 },
   vidro: { nome: 'Vidro', cor: '#a9d3ea', grupo: ['abertura', 'parede', 'geo'], rug: 0.05 },
-  mdf: { nome: 'MDF', cor: '#d9b380', grupo: ['geo'], rug: 0.6 },
+  mdf: { nome: 'MDF', cor: '#d9b380', grupo: ['geo'], rug: 0.48 },
 }
 
 export const PADRAO = { piso: 'porcelanato', parede: 'pintura', teto: 'gesso', abertura: 'madeira', geo: 'mdf' }
@@ -74,6 +74,26 @@ function desenha(tipo: string, cor: string): HTMLCanvasElement {
       ruido(g, S, S, 22)
       grade(S * 0.45, tom(0.7), 3)
       break
+    case 'mdf': {
+      // Veios discretos para o MDF, sem esconder a cor escolhida.
+      for (let y = 0; y < S; y++) {
+        const onda = Math.sin(y * 0.035 + Math.sin(y * 0.009) * 2.2) * 0.035
+        g.fillStyle = tom(0.97 + onda + 0.018 * Math.sin(y * 0.19))
+        g.fillRect(0, y, S, 1)
+      }
+      ruido(g, S, S, 4)
+      break
+    }
+    case 'aluminio': {
+      // Escovado direcional para perfis metálicos.
+      for (let x = 0; x < S; x++) {
+        const v = 0.92 + 0.07 * Math.sin(x * 0.42) + 0.025 * Math.sin(x * 1.7)
+        g.fillStyle = tom(v)
+        g.fillRect(x, 0, 1, S)
+      }
+      ruido(g, S, S, 3)
+      break
+    }
     case 'madeira': {
       for (let y = 0; y < S; y += 2) {
         g.fillStyle = tom(0.82 + 0.18 * Math.sin(y * 0.09 + Math.sin(y * 0.013) * 4))
@@ -126,20 +146,33 @@ export function material(tipo: string | undefined, cor: string | undefined, e: E
   const key = tipo && ACABAMENTOS[tipo] ? tipo : PADRAO[grupo as keyof typeof PADRAO] || 'pintura'
   const a = ACABAMENTOS[key]
   const c = cor || a.cor
-  const m = new MeshStandardMaterial({
-    color: e.sel ? '#8fb8e6' : e.preto ? '#000000' : e.branco ? '#ffffff' : e.texturas ? '#ffffff' : c,
-    roughness: a.rug,
+  const vidro = key === 'vidro' || e.transparente
+  const m = vidro ? new MeshPhysicalMaterial({
+    color: c,
+    roughness: key === 'vidro' ? 0.06 : 0.18,
+    metalness: 0,
+    transmission: key === 'vidro' ? 0.88 : 0.45,
+    thickness: key === 'vidro' ? 0.012 : 0.02,
+    ior: 1.5,
+    side: DoubleSide,
+    polygonOffset: true,
+    polygonOffsetFactor: 1,
+    polygonOffsetUnits: 1,
+  }) : new MeshStandardMaterial({
+    color: e.preto ? '#000000' : e.branco ? '#ffffff' : e.texturas ? '#ffffff' : c,
+    roughness: key === 'aluminio' ? 0.28 : a.rug,
     metalness: a.met ?? 0,
     side: DoubleSide,
     polygonOffset: true,
     polygonOffsetFactor: 1,
     polygonOffsetUnits: 1,
   })
-  if (e.texturas && !e.branco && !e.preto && !e.sel) m.map = textura(key, c)
-  if (key === 'vidro' || e.transparente) {
-    m.transparent = true
-    m.opacity = key === 'vidro' ? 0.35 : 0.4
-    m.depthWrite = false
+  if (e.texturas && !e.branco && !e.preto) m.map = textura(key, c)
+  if (vidro) {
+    // A transmissão física permite ver através do vidro sem reduzir sua opacidade artificialmente.
+    m.transparent = false
+    m.opacity = 1
+    m.depthWrite = true
   }
   if (e.invisivel) m.visible = false
   return m

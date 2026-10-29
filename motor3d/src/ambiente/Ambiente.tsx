@@ -1,5 +1,5 @@
-import { useMemo, useState, type ReactNode } from 'react'
-import { BoxGeometry, type BufferGeometry, Color, type MeshStandardMaterial, Vector3 } from 'three'
+import { useMemo, useRef, useState, type ReactNode } from 'react'
+import { BoxGeometry, Plane, type BufferGeometry, Color, type MeshStandardMaterial, Vector3 } from 'three'
 import { Edges, Html, Line } from '@react-three/drei'
 import type { ThreeEvent } from '@react-three/fiber'
 import {
@@ -199,6 +199,7 @@ function PreviaAbertura({ w, s, tipo }: { w: Parede; s: number; tipo: string }) 
 
 function AberturaMesh({ a, w }: { a: Abertura; w: Parede }) {
   const sel: Sel = { t: 'abertura', id: a.id }
+  const [aberta, setAberta] = useState(false)
   const opts = useRoom((s) => s.opts)
   const ev = useCliques(sel, 'aberturas')
   const on = mesmo(opts.sel, sel)
@@ -224,7 +225,24 @@ function AberturaMesh({ a, w }: { a: Abertura; w: Parede }) {
     if (a.tipo === 'janela') pecas.push(box(0, b / 2, 0, L, b, E + 0.03, m, 'b'))
   }
   if (a.tipo === 'porta') {
-    pecas.push(box(0, (H - b) / 2, 0, L - 2 * b, H - b - 0.01, 0.035, m, 'f'))
+    const folhaL = L - 2 * b
+    const dobradica = a.inv ? L / 2 - b : -L / 2 + b
+    pecas.push(
+      <group key="folha-porta" position={[dobradica, 0, 0]} rotation={[0, aberta ? (a.inv ? -1 : 1) * Math.PI / 2 : 0, 0]}>
+        <mesh
+          position={[a.inv ? -folhaL / 2 : folhaL / 2, (H - b) / 2, 0]}
+          material={m}
+          castShadow
+          receiveShadow
+          userData={{ sel, camada: 'aberturas', parte: 'folha-porta' }}
+          {...ev}
+          onDoubleClick={(e) => { e.stopPropagation(); setAberta((v) => !v) }}
+        >
+          <boxGeometry args={[folhaL, H - b - 0.01, 0.035]} />
+          {(estilo(opts.fill).linhas || on) && <Edges threshold={20} color={on ? COR_SEL : '#3a3f46'} />}
+        </mesh>
+      </group>,
+    )
     pecas.push(
       <mesh key="maq" position={[(a.inv ? -1 : 1) * (L / 2 - b - 0.07), 1.05, 0.03]} rotation={[Math.PI / 2, 0, 0]} raycast={() => null}>
         <cylinderGeometry args={[0.012, 0.012, 0.09, 12]} />
@@ -438,13 +456,50 @@ export function Ambiente() {
 
 function PecaArmario({ p, sel, on }: { p: Armario3D['pecas'][number]; sel: Sel; on: boolean }) {
   const opts = useRoom((s) => s.opts)
+  const arrastando = useRef(false)
   const ev = useCliques(sel, 'armarios')
   const e = estilo(opts.fill)
   const m = useMat(p.mat || 'mdf', p.cor, 'geo', sel)
-  const pos: [number, number, number] = [(p.x + p.dx / 2) * M, (p.z + p.dz / 2) * M, (p.y + p.dy / 2) * M]
+  const pos: [number, number, number] = [(p.x + p.dx / 2) * M, (p.z + p.dz / 2) * M, -(p.y + p.dy / 2) * M]
   if (e.caixa) return null
   return (
-    <mesh position={pos} material={m} castShadow receiveShadow userData={{ sel, camada: 'armarios', peca: p.nome }} {...ev}>
+    <mesh
+      position={pos}
+      material={m}
+      castShadow
+      receiveShadow
+      userData={{ sel, camada: 'armarios', peca: p.nome }}
+      {...ev}
+      onPointerDown={(e) => {
+        if (e.nativeEvent.button !== 0 || opts.ferramenta !== 'navegar' || (opts.nav && opts.nav !== 'sel') || opts.inserir || opts.cons?.ativo) return
+        e.stopPropagation()
+        const ponto = e.ray.intersectPlane(new Plane(new Vector3(0, 1, 0), 0), new Vector3())
+        if (!ponto) return
+        arrastando.current = true
+        e.target.setPointerCapture(e.pointerId)
+        ponte().selecionar?.(sel, { ctrl: e.nativeEvent.ctrlKey || e.nativeEvent.metaKey })
+        ponte().acao?.('arrastarArmarioInicio', sel, { x: Math.round(ponto.x / M), y: Math.round(-ponto.z / M) })
+      }}
+      onPointerMove={(e) => {
+        if (!arrastando.current) return
+        e.stopPropagation()
+        const ponto = e.ray.intersectPlane(new Plane(new Vector3(0, 1, 0), 0), new Vector3())
+        if (!ponto) return
+        ponte().acao?.('arrastarArmario', sel, { x: Math.round(ponto.x / M), y: Math.round(-ponto.z / M) })
+      }}
+      onPointerUp={(e) => {
+        if (!arrastando.current) return
+        e.stopPropagation()
+        arrastando.current = false
+        e.target.releasePointerCapture(e.pointerId)
+        ponte().acao?.('arrastarArmarioFim', sel, null)
+      }}
+      onPointerCancel={() => {
+        if (!arrastando.current) return
+        arrastando.current = false
+        ponte().acao?.('arrastarArmarioFim', sel, null)
+      }}
+    >
       <boxGeometry args={[Math.max(0.001, p.dx * M), Math.max(0.001, p.dz * M), Math.max(0.001, p.dy * M)]} />
       {(e.linhas || on) && <Edges threshold={20} color={on ? COR_SEL : '#3a3f46'} />}
     </mesh>
@@ -452,6 +507,7 @@ function PecaArmario({ p, sel, on }: { p: Armario3D['pecas'][number]; sel: Sel; 
 }
 
 function ArmarioMesh({ a }: { a: Armario3D }) {
+  const room = useRoom((s) => s.room)
   const sel: Sel = { t: 'armario', id: a.id }
   const opts = useRoom((s) => s.opts)
   const on = mesmo(opts.sel, sel)
@@ -461,16 +517,29 @@ function ArmarioMesh({ a }: { a: Armario3D }) {
     <group position={w3(a.x, a.y, a.z)} rotation={[0, rot, 0]}>
       {a.pecas.map((p, i) => <PecaArmario key={i} p={p} sel={sel} on={on} />)}
       {(e.caixa || on) && (
-        <lineSegments position={[(a.L / 2) * M, (a.A / 2) * M, (a.P / 2) * M]} raycast={() => null}>
+        <lineSegments position={[(a.L / 2) * M, (a.A / 2) * M, -(a.P / 2) * M]} raycast={() => null}>
           <edgesGeometry args={[new BoxGeometry(a.L * M, a.A * M, a.P * M)]} />
           <lineBasicMaterial color={on ? COR_SEL : '#33404f'} />
         </lineSegments>
       )}
-      {on && opts.cotas && (
-        <Html position={[(a.L / 2) * M, (a.A + 60) * M, (a.P / 2) * M]} center style={{ pointerEvents: 'none' }}>
-          <div className="cota3d">{Math.round(a.L)} × {Math.round(a.A)} × {Math.round(a.P)}</div>
-        </Html>
-      )}
+      {on && opts.cotas && (() => {
+        const alturaAmbiente = room.paredes.length ? Math.max(...room.paredes.map((w) => w.alt, 0)) : null
+        const inferior = Math.max(0, a.z)
+        const superior = alturaAmbiente === null ? null : Math.max(0, alturaAmbiente - (a.z + a.A))
+        return (
+          <>
+            <Html position={[(a.L / 2) * M, (a.A + 60) * M, (a.P / 2) * M]} center style={{ pointerEvents: 'none' }}>
+              <div className="cota3d">{Math.round(a.L)} × {Math.round(a.A)} × {Math.round(a.P)} mm</div>
+            </Html>
+            <Html position={[(a.L / 2) * M, (a.A + 150) * M, 0]} center style={{ pointerEvents: 'none' }}>
+              <div className="cota3d">Superior: {superior === null ? 'sem teto/altura definida' : Math.round(superior) + ' mm'}</div>
+            </Html>
+            <Html position={[(a.L / 2) * M, -45 * M, (a.P / 2) * M]} center style={{ pointerEvents: 'none' }}>
+              <div className="cota3d">Inferior: {Math.round(inferior)} mm</div>
+            </Html>
+          </>
+        )
+      })()}
     </group>
   )
 }

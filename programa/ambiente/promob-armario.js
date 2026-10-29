@@ -37,8 +37,24 @@ function armNovo(k = 'inferior'){ if(String(k).startsWith('mod:')){ const m = ar
   const E = ARM_EST[k] || ARM_EST.inferior, c = armChapaPadrao(c => c.esp === 15), f = armChapaPadrao(c => c.esp === 18) || c, fu = armChapaPadrao(c => c.esp <= 9);
   return {id:uid(), nome:E.nome, est:k, x:0, y:0, z:E.z, rot:0, L:E.L, A:E.A, P:E.P, rodape:E.rodape, chapa:c.material + '|' + c.esp, chapaFrente:f.material + '|' + f.esp, chapaFundo:fu && fu.esp <= 9 ? fu.material + '|' + fu.esp : c.material + '|6',
     borda:armBordaPadrao(), folga:2, fundo:'encaixado', raiz:armNo(E.raiz())}; }
-// item do projeto (com largura, profundidade e altura) posto no ambiente: uma caixa com porta dupla
-function armDeItem(i){ const a = armNovo('inferior'); return {...a, nome:i.nome, L:+i.L || 600, A:+i.A || 700, P:+i.P || 500, z:0, rodape:0, deItem:i.id, raiz:armNo({porta:{tipo:'dupla'}})}; }
+// Item do projeto inserido no ambiente: primeiro reutiliza um módulo real da Minha biblioteca.
+// Só usa o invólucro genérico quando não existe módulo cadastrado compatível.
+function armDeItem(i){
+  const L = +i.L || 600, A = +i.A || 700, P = +i.P || 500;
+  const mods = armBib();
+  // Reutiliza apenas módulos com dimensões iguais: redimensionar a caixa sem recalcular os vãos
+  // deslocaria prateleiras e divisórias e produziria peças diferentes no corte.
+  const salvo = mods.find(m => m.a &&
+    Math.abs(+m.a.L - L) <= 1 &&
+    Math.abs(+m.a.A - A) <= 1 &&
+    Math.abs(+m.a.P - P) <= 1);
+  if(salvo?.a){
+    const a = armClone(salvo.a);
+    return {...a, nome:i.nome || a.nome, L, A, P, x:0, y:0, z:0, rot:0, deItem:i.id, est:'mod:' + salvo.id};
+  }
+  const a = armNovo('inferior');
+  return {...a, nome:i.nome, L, A, P, z:0, rodape:0, deItem:i.id, raiz:armNo({porta:{tipo:'dupla'}})};
+}
 const armClone = a => { const c = JSON.parse(JSON.stringify(a)); const reid = n => { n.id = armNo().id; (n.f || []).forEach(reid); }; reid(c.raiz); c.id = uid(); delete c.item; delete c.assin; return c; };
 
 /* ---- árvore de vãos ---- */
