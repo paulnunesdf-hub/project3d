@@ -1,0 +1,39 @@
+3.2010.6.Branco.MDF - Fundo 6;MDF - 6 mm.Branco;1174;674;1;0;0;0;0
+3.2002.18.Branco.MDF - Base 18;MDF - 18 mm.Branco;1164;550;1;0;0;0;0
+3.2001.18.Branco.MDF - Lateral 18mm;MDF - 18 mm.Branco;700;550;2;0;0;0;0
+3.2001.18.Branco.MDF - Divisoria 18;MDF - 18 mm.Branco;664;544;1;0;0;0;0
+3.0045.18.Branco.MDF - Prateleira 18mm;MDF - 18 mm.Branco;573;504;2;0;0;0;0
+3.0104.18.Branco.MDF - Porta Reta;MDF - 18 mm.Branco;293.75;690;4;0;0;0;0
+3.2011.18.Branco.MDF - Sarrafo Linear Horizontal 18mm;MDF - 18 mm.Branco;1164;70;2;0;0;0;0
+1.2014.6.Arauco.Gaia.MDF - Fundo 6;MDF - 6 mm.Arauco.Gaia;1145;695;1;0;0;0;0
+1.2006.15.Arauco.Gaia.MDF - Base 15;MDF - 15 mm.Arauco.Gaia;1115;570;1;0;0.4;0;0
+1.0155.15.Arauco.Gaia.MDF - Prateleira Linear;MDF - 15 mm.Arauco.Gaia;1115;524;1;0;0.4;0;0
+1.2001.15.Arauco.Gaia.MDF - Frente Falsa 15;MDF - 15 mm.Arauco.Gaia;636;716;1;0;0;0.4;0
+1.2006.15.Arauco.Gaia.MDF - Base 15;MDF - 15 mm.Arauco.Gaia;770;570;2;0;0.4;0;0
+1.0155.15.Arauco.Gaia.MDF - Prateleira Linear;MDF - 15 mm.Arauco.Gaia;770;555;1;0;0.4;0;0
+1.2001.15.Arauco.Gaia.MDF - Lateral 15;MDF - 15 mm.Arauco.Gaia;695;570;10;0.4;0;0;0
+1.0155.15.Arauco.Gaia.MDF - Prateleira Linear;MDF - 15 mm.Arauco.Gaia;743;505;1;0;0.4;0;0
+1.0191.15.Duratex.Cristallo.Cinza Sagrado.MDF - Frente Reta;MDF - 15 mm.Duratex.Cristallo.Cinza Sagrado;794;351;2;0.4;0.4;0.4;0.4
+1.0185.15.Duratex.Cristallo.Cinza Sagrado.MDF - Porta Reta;MDF - 15 mm.Duratex.Cristallo.Cinza Sagrado;396;590;2;0.4;0.4;0.4;0.4
+1.2006.15.Arauco.Gaia.MDF - Base 15;MDF - 15 mm.Arauco.Gaia;370;570;1;0;0.4;0;0
+1.2056.6.Arauco.Gaia.MDF - Fundo de Gaveta 6;MDF - 6 mm.Arauco.Gaia;343;535;3;0;0;0;0
+1.0185.15.Duratex.Cristallo.Cinza Sagrado.MDF - Porta Reta;MDF - 15 mm.Duratex.Cristallo.Cinza Sagrado;254;704;2;0.4;0.4;0.4;0.4
+1.2054.15.Arauco.Gaia.MDF - Lateral de Gaveta 15mm;MDF - 15 mm.Arauco.Gaia;291;535;2;0;0;0;0.4
+1.0191.15.Duratex.Cristallo.Cinza Sagrado.MDF - Frente Reta;MDF - 15 mm.Duratex.Cristallo.Cinza Sagrado;394;351;1;0.4;0.4;0.4;0.4
+1.2057.15.Arauco.Gaia.MDF - Contra Frente de Gaveta 15mm;MDF - 15 mm.Arauco.Gaia;313;281;1;0.4;0;0;0
+1.2055.15.Arauco.Gaia.MDF - Posterior de Gaveta 15;MDF - 15 mm.Arauco.Gaia;313;271;1;0.4;0;0;0
+1.2020.15.Arauco.Gaia.MDF - Sarrafo 15mm;MDF - 15 mm.Arauco.Gaia;1145;70;2;0;0.4;0;0
+1.0191.15.Duratex.Cristallo.Cinza Sagrado.MDF - Frente Reta;MDF - 15 mm.Duratex.Cristallo.Cinza Sagrado;394;174.5;2;0.4;0.4;0.4;0.4
+1.2006.15.Arauco.Gaia.MDF - Base 15;MDF - 15 mm.Arauco.Gaia;120;570;1;0;0.4;0;0
+1.0155.15.Arauco.Gaia.MDF - Prateleira Linear;MDF - 15 mm.Arauco.Gaia;120;555;4;0;0.4;0;0
+1.2054.15.Arauco.Gaia.MDF - Lateral de Gaveta 15mm;MDF - 15 mm.Arauco.Gaia;114.5;535;4;0;0;0;0.4
+1.2020.15.Arauco.Gaia.MDF - Sarrafo 15mm;MDF - 15 mm.Arauco.Gaia;800;70;4;0;0.4;0;0
+1.2020.15.Arauco.Gaia.MDF - Sarrafo 70mm;MDF - 15 mm.Arauco.Gaia;770;70;1;0;0.4;0;0
+1.2016.15.Arauco.Gaia.MDF - Fundo Travessa 15;MDF - 15 mm.Arauco.Gaia;70;710;6;0;0;0;0
+1.0191.15.Arauco.Gaia.MDF - Frente Reta;MDF - 15 mm.Arauco.Gaia;794;50;1;0.4;0.4;0.4;0.4
+1.2057.15.Arauco.Gaia.MDF - Contra Frente de Gaveta 15mm;MDF - 15 mm.Arauco.Gaia;313;104.5;2;0.4;0;0;0
+1.2055.15.Arauco.Gaia.MDF - Posterior de Gaveta 15;MDF - 15 mm.Arauco.Gaia;313;94.5;2;0.4;0;0;0
+1.2014.15.Arauco.Gaia.MDF - Frente p/ Fechamento 15;MDF - 15 mm.Arauco.Gaia;40;710;1;0;0;0;0
+1.2020.15.Arauco.Gaia.MDF - Sarrafo 15mm;MDF - 15 mm.Arauco.Gaia;400;70;2;0;0.4;0;0
+1.2001.15.Arauco.Gaia.MDF - Distanciador 15;MDF - 15 mm.Arauco.Gaia;680;40;1;0.4;0;0;0
+1.2020.15.Arauco.Gaia.MDF - Sarrafo 15mm;MDF - 15 mm.Arauco.Gaia;150;70;2;0;0.4;0;0

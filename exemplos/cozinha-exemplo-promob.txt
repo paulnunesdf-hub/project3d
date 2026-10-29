@@ -1,0 +1,14 @@
+Projeto;Modulo;Descricao;Quantidade;Comprimento;Largura;Espessura;Material;Veio;C1;C2;L1;L2
+Cozinha Silva;Balcao Pia 1200;Lateral;2;850;560;15;MDF Branco;N;Branco 22x0,45;;;
+Cozinha Silva;Balcao Pia 1200;Base;1;1170;560;15;MDF Branco;N;Branco 22x0,45;;;
+Cozinha Silva;Balcao Pia 1200;Travessa;2;1170;100;15;MDF Branco;N;;;;
+Cozinha Silva;Balcao Pia 1200;Fundo;1;1180;830;6;MDF Branco;N;;;;
+Cozinha Silva;Balcao Pia 1200;Porta;2;796;596;18;MDF Freijo;S;Freijo 22x1;Freijo 22x1;Freijo 22x1;Freijo 22x1
+Cozinha Silva;Aereo 800;Lateral;2;700;330;15;MDF Branco;N;Branco 22x0,45;;;
+Cozinha Silva;Aereo 800;Base/Tampo;2;770;330;15;MDF Branco;N;Branco 22x0,45;;;
+Cozinha Silva;Aereo 800;Prateleira;1;766;300;15;MDF Branco;N;Branco 22x0,45;;;
+Cozinha Silva;Aereo 800;Porta;2;696;396;18;MDF Freijo;S;Freijo 22x1;Freijo 22x1;Freijo 22x1;Freijo 22x1
+Cozinha Silva;Gaveteiro 600;Lateral;2;850;560;15;MDF Branco;N;Branco 22x0,45;;;
+Cozinha Silva;Gaveteiro 600;Base;1;570;560;15;MDF Branco;N;Branco 22x0,45;;;
+Cozinha Silva;Gaveteiro 600;Lateral Gaveta;6;500;150;15;MDF Branco;N;Branco 22x0,45;;;
+Cozinha Silva;Gaveteiro 600;Frente Gaveta;3;596;276;18;MDF Freijo;S;Freijo 22x1;Freijo 22x1;Freijo 22x1;Freijo 22x1

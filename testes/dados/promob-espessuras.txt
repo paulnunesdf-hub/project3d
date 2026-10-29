@@ -1,0 +1,7 @@
+Projeto;Modulo;Descricao;Quantidade;Comprimento;Largura;Material;C1
+Cozinha Teste;1665 Balcao 2 Gavetoes;Lateral;2;695;570;Cores.Branco - MDF - 15;Branco 22
+Cozinha Teste;1665 Balcao 2 Gavetoes;Base;1;770;570;Cores.Branco - MDF - 15;Branco 22
+Cozinha Teste;1665 Balcao 2 Gavetoes;Tampo;1;800;570;Cores.Branco - MDF - 18;Branco 22
+Cozinha Teste;1665 Balcao 2 Gavetoes;Fundo;1;780;690;Cores.Branco - MDF - 6;
+Cozinha Teste;1648 Aereo;Porta;2;696;396;Cores.Branco - MDF - 18;Branco 22
+Cozinha Teste;1648 Aereo;Fundo Aereo;1;1190;690;Cores.Branco - MDF - 6;

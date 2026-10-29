@@ -1,0 +1,3 @@
+Descricao;Qtde;Comprimento;Largura;Espessura;Material
+Sem medida;2;;;15;MDF
+Texto;1;abc;xyz;15;MDF

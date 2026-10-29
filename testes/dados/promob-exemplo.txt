@@ -1,0 +1,3 @@
+Projeto;Modulo;Descricao;Quantidade;Comprimento;Largura;Espessura;Material;Veio;C1;C2;L1;L2
+Casa Bia;Roupeiro;Lateral;2;2200;550;15;MDF Branco;N;Branco 22;;;
+Casa Bia;Roupeiro;Porta;3;2180;450;18;MDF Freijo;S;Freijo;Freijo;Freijo;Freijo

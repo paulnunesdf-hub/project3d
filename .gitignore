@@ -1,0 +1,59 @@
+# Dependências e saídas de compilação
+node_modules/
+motor3d/dist/
+dist-ssr/
+*.tsbuildinfo
+
+# Cópia do HTML gerada pelo construir.py para o go build (o original fica na raiz)
+exe/app.html
+
+# Executáveis (o .exe é gerado com go build; não versionar)
+*.exe
+exe/servidor
+*.dll
+*.so
+*.dylib
+
+# Resultados de cada rodada dos testes
+testes/ultimo-resultado*.json
+test-results/
+playwright-report/
+coverage/
+
+# Segredos e configurações locais
+.env
+.env.*
+*.pem
+*.key
+*.local
+credentials*.json
+secrets*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Temporários, logs e backups
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+tmp/
+temp/
+versoes-anteriores-*.html
+
+# Editores e sistema
+.vscode/
+.idea/
+.claude/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Material de terceiros e dados de clientes (não publicar)
+*.pdf
+*.promob
