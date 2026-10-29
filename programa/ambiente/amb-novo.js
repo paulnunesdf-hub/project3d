@@ -340,7 +340,19 @@ function ambAcao3D(nome, s, arg){
     case 'arrastarArmario': {
       const a = A.armarios.find(v => v.id === s?.id);
       if(a && AV.drag3D?.id === a.id && Number.isFinite(+arg?.x) && Number.isFinite(+arg?.y)){
-        a.x = Math.round(+arg.x + AV.drag3D.dx); a.y = Math.round(+arg.y + AV.drag3D.dy);
+        let x = Math.round(+arg.x + AV.drag3D.dx), y = Math.round(+arg.y + AV.drag3D.dy);
+        // Evita saltos para longe quando o raio do mouse cruza o plano do piso perto do horizonte.
+        const P = A.paredes || [];
+        if(P.length){
+          const margem = 500;
+          const minX = Math.min(...P.flatMap(w => [w.x1, w.x2])) - margem;
+          const maxX = Math.max(...P.flatMap(w => [w.x1, w.x2])) + margem;
+          const minY = Math.min(...P.flatMap(w => [w.y1, w.y2])) - margem;
+          const maxY = Math.max(...P.flatMap(w => [w.y1, w.y2])) + margem;
+          x = Math.max(minX, Math.min(maxX - (a.L || 0), x));
+          y = Math.max(minY, Math.min(maxY - (a.P || 0), y));
+        }
+        a.x = x; a.y = y;
         motorRoom();
         if($('#amb2dHost')) refresh2D();
       }
