@@ -148,7 +148,7 @@ export function material(tipo: string | undefined, cor: string | undefined, e: E
   const c = cor || a.cor
   const vidro = key === 'vidro' || e.transparente
   const m = vidro ? new MeshPhysicalMaterial({
-    color: e.sel ? '#8fb8e6' : c,
+    color: c,
     roughness: key === 'vidro' ? 0.06 : 0.18,
     metalness: 0,
     transmission: key === 'vidro' ? 0.88 : 0.45,
@@ -159,7 +159,7 @@ export function material(tipo: string | undefined, cor: string | undefined, e: E
     polygonOffsetFactor: 1,
     polygonOffsetUnits: 1,
   }) : new MeshStandardMaterial({
-    color: e.sel ? '#8fb8e6' : e.preto ? '#000000' : e.branco ? '#ffffff' : e.texturas ? '#ffffff' : c,
+    color: e.preto ? '#000000' : e.branco ? '#ffffff' : e.texturas ? '#ffffff' : c,
     roughness: key === 'aluminio' ? 0.28 : a.rug,
     metalness: a.met ?? 0,
     side: DoubleSide,
@@ -167,7 +167,7 @@ export function material(tipo: string | undefined, cor: string | undefined, e: E
     polygonOffsetFactor: 1,
     polygonOffsetUnits: 1,
   })
-  if (e.texturas && !e.branco && !e.preto && !e.sel) m.map = textura(key, c)
+  if (e.texturas && !e.branco && !e.preto) m.map = textura(key, c)
   if (vidro) {
     // A transmissão física permite ver através do vidro sem reduzir sua opacidade artificialmente.
     m.transparent = false
