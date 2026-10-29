@@ -42,12 +42,15 @@ function armNovo(k = 'inferior'){ if(String(k).startsWith('mod:')){ const m = ar
 function armDeItem(i){
   const L = +i.L || 600, A = +i.A || 700, P = +i.P || 500;
   const mods = armBib();
-  const mesmoNome = mods.find(m => String(m.nome || '').trim().toLowerCase() === String(i.nome || '').trim().toLowerCase());
-  const mesmoTamanho = mods.find(m => m.a && Math.abs(+m.a.L - L) <= 1 && Math.abs(+m.a.A - A) <= 1 && Math.abs(+m.a.P - P) <= 1);
-  const salvo = mesmoNome || mesmoTamanho;
+  // Reutiliza apenas módulos com dimensões iguais: redimensionar a caixa sem recalcular os vãos
+  // deslocaria prateleiras e divisórias e produziria peças diferentes no corte.
+  const salvo = mods.find(m => m.a &&
+    Math.abs(+m.a.L - L) <= 1 &&
+    Math.abs(+m.a.A - A) <= 1 &&
+    Math.abs(+m.a.P - P) <= 1);
   if(salvo?.a){
     const a = armClone(salvo.a);
-    return {...a, nome:i.nome || a.nome, L, A, P, x:0, y:0, z:0, rot:0, rodape:a.rodape || 0, deItem:i.id, est:'mod:' + salvo.id};
+    return {...a, nome:i.nome || a.nome, L, A, P, x:0, y:0, z:0, rot:0, deItem:i.id, est:'mod:' + salvo.id};
   }
   const a = armNovo('inferior');
   return {...a, nome:i.nome, L, A, P, z:0, rodape:0, deItem:i.id, raiz:armNo({porta:{tipo:'dupla'}})};
