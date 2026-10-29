@@ -334,13 +334,13 @@ function ambAcao3D(nome, s, arg){
   switch(nome){
     case 'arrastarArmarioInicio': {
       const a = A.armarios.find(v => v.id === s?.id);
-      if(a){ ambSnap(); AV.drag3D = {id:a.id}; AV.sel = s; AV.multi = []; }
+      if(a && Number.isFinite(+arg?.x) && Number.isFinite(+arg?.y)){ ambSnap(); AV.drag3D = {id:a.id, dx:a.x - +arg.x, dy:a.y - +arg.y}; AV.sel = s; AV.multi = []; }
       break;
     }
     case 'arrastarArmario': {
       const a = A.armarios.find(v => v.id === s?.id);
       if(a && AV.drag3D?.id === a.id && Number.isFinite(+arg?.x) && Number.isFinite(+arg?.y)){
-        a.x = Math.round(+arg.x); a.y = Math.round(+arg.y);
+        a.x = Math.round(+arg.x + AV.drag3D.dx); a.y = Math.round(+arg.y + AV.drag3D.dy);
         motorRoom();
         if($('#amb2dHost')) refresh2D();
       }
