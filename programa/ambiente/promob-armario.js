@@ -125,7 +125,16 @@ function armSync(a, forcar){ const pr = ambDono(); if(!pr || a.deItem) return nu
   let it = pr.itens.find(i => i.arm3d === a.id); if(it && !forcar && a.assin === assin) return it;
   if(!it){ it = newItem({nome:a.nome, arm3d:a.id, open:false}); pr.itens.push(it); }
   Object.assign(it, {nome:a.nome, L:Math.round(a.L), P:Math.round(a.P), A:Math.round(a.A)});
-  it.filhos = [...pecas.map(p => newPart({desc:p.desc, qty:p.qty, L:p.L, W:p.W, esp:p.esp, mat:p.mat, veio:p.veio, bordas:p.bordas})), ...acess.map(c => newAcc({desc:c.desc, qty:c.qty, L:c.L || 0}))];
+  it.filhos = [...pecas.map(p => {
+    const filho = newPart({desc:p.desc, qty:p.qty, L:p.L, W:p.W, esp:p.esp, mat:p.mat, veio:p.veio, bordas:p.bordas});
+    if(window.Project3DPart) filho.canonica = Project3DPart.normalizar({
+      sourceId: a.id + ':' + [p.desc, p.L, p.W, p.esp, p.mat].join('|'),
+      name: p.desc, category: 'panel', length: p.L, width: p.W, thickness: p.esp,
+      quantity: p.qty, material: p.mat, grain: p.veio ? 'length' : 'none',
+      edgeBanding: p.bordas, source: 'cabinet:' + a.id
+    });
+    return filho;
+  }), ...acess.map(c => newAcc({desc:c.desc, qty:c.qty, L:c.L || 0}))];
   a.assin = assin; a.item = it.id; pr.exemplo = false; touch(pr); return it; }
 function armSyncTodos(){ const pr = ambDono(); if(!pr) return; const A = amb(), ids = new Set((A.armarios || []).map(a => a.id)); let mudou = false;
   const antes = pr.itens.length; pr.itens = pr.itens.filter(i => !i.arm3d || ids.has(i.arm3d)); if(pr.itens.length !== antes) mudou = true;
