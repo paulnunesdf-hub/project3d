@@ -40,7 +40,7 @@ const TOOL_SECTIONS: { label: string; tools: { tool: Tool; label: string }[] }[]
 
 const DIVIDER = <div className="my-1 border-t border-edge" />
 
-export function Toolbar() {
+export function Toolbar({ onOpenAI }: { onOpenAI?: () => void }) {
   const panels = useDesignStore((s) => s.panels)
   const materials = useDesignStore((s) => s.materials)
   const stocks = useDesignStore((s) => s.stocks)
@@ -157,6 +157,8 @@ export function Toolbar() {
             )
           })}
         </div>
+
+        <Button variant="ghost" onClick={() => onOpenAI?.()}>✦ Imagem → 3D</Button>
 
         <div className="flex-1" />
 
