@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { AI3DPanel } from './components/AI3DPanel'
 import { Toolbar } from './components/panels/Toolbar'
 import { PropertiesPanel } from './components/panels/PropertiesPanel'
 import { MaterialsPanel } from './components/panels/MaterialsPanel'
@@ -28,6 +29,7 @@ export default function App() {
   const panels = useDesignStore((s) => s.panels)
   const selected = useDesignStore((s) => s.selectedIds)
   const modulos = useRoom((s) => s.opts.modulos !== false)
+  const [aiOpen, setAiOpen] = useState(false)
 
   // Ctrl+Z / Ctrl+Y desfazem as peças (módulos); as paredes têm o desfazer da página principal
   useEffect(() => {
@@ -48,7 +50,7 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col">
-      {modulos && <Toolbar />}
+      {modulos && <Toolbar onOpenAI={() => setAiOpen(true)} />}
       <main className="flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
           {hasWebGL() ? (
@@ -69,6 +71,7 @@ export default function App() {
           </ResizableSidebar>
         )}
       </main>
+      {aiOpen && <AI3DPanel onClose={() => setAiOpen(false)} />}
       <ConfirmHost />
     </div>
   )
